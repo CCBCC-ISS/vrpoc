@@ -1,0 +1,16 @@
+CACHE MANIFEST
+
+# CCBCC VR v0.0.1
+
+CACHE:
+index.html
+
+js/app.js
+js/third-party/threejs/DeviceOrientationControls.js
+js/third-party/threejs/OrbitControls.js
+js/third-party/threejs/three.js
+
+textures/images/7-wide.jpg
+textures/images/8-wide.jpg
+textures/images/9-wide.png
+textures/patterns/checker.png
