@@ -1,100 +1,111 @@
 var CCBCC_VR_APP = CCBCC_VR_APP || {};
 
 (function (app) {
-     app.scene;
+    // Public properties
+    
+    app.scene;
+    app.requestFullscreen;
+    app.init;
+    app.render; // needs to be public so that getMaxAnisotropy is available for other methods to call
 
-     app._camera;
-     app._renderer;
-     app._effect;
-     app._controls;
-     app._rootElement;
-     app._container;
+    
+    // Private objects
+    
+    let _camera,
+        _effect,
+        _controls,
+        _rootElement,
+        _container,
+        __clock = new THREE.Clock();
 
-     let  __clock = new THREE.Clock();
-
+        
+    // Private functions
+    
     const _setOrientationControls = (e) => {
         if (!e.alpha) {
             return;
         }
         
-        app._controls = new THREE.DeviceOrientationControls(app._camera, true);
-        app._controls.connect();
-        app._controls.update();
+        _controls = new THREE.DeviceOrientationControls(_camera, true);
+        _controls.connect();
+        _controls.update();
         
-        app._rootElement.addEventListener('click', app.requestFullscreen, false);
+        _rootElement.addEventListener('click', app.requestFullscreen, false);
         
         window.removeEventListener('deviceorientation', _setOrientationControls, true);
     };
 
     const _resize = () => {
-        let width = app._container.offsetWidth;
-        let height = app._container.offsetHeight;
+        let width = _container.offsetWidth;
+        let height = _container.offsetHeight;
         
-        app._camera.aspect = width / height;
-        app._camera.updateProjectionMatrix();
-        app._renderer.setSize(width, height);
+        _camera.aspect = width / height;
+        _camera.updateProjectionMatrix();
+        app.renderer.setSize(width, height);
     };
 
     const _update = (dt) => {
         _resize();
         
-        app._camera.updateProjectionMatrix();
-        app._controls.update(dt);
+        _camera.updateProjectionMatrix();
+        _controls.update(dt);
     }
 
     const _render = (dt) => {
-        app._renderer.render(app.scene, app._camera);
+        app.renderer.render(app.scene, _camera);
     };
 
-    app.animate = (t) => {
-        requestAnimationFrame(app.animate);
+    const _animate = (t) => {
+        window.requestAnimationFrame(_animate);
         
         _update(__clock.getDelta());
         _render(__clock.getDelta());
     };
 
-    app.requestFullscreen = () => {
-        if (app._container.requestFullscreen) {
-            app._container.requestFullscreen();
-        } else if (app._container.msRequestFullscreen) {
-            app._container.msRequestFullscreen();
-        } else if (app._container.mozRequestFullScreen) {
-            app._container.mozRequestFullScreen();
-        } else if (app._container.webkitRequestFullscreen) {
-            app._container.webkitRequestFullscreen();
-        }
-    };
-
     const _setup = () => {
-        app._renderer = new THREE.WebGLRenderer({alpha: true});
-        app._rootElement = app._renderer.domElement;
-        app._container = document.getElementById('container');
-        app._container.appendChild(app._rootElement);
+        app.renderer = new THREE.WebGLRenderer({alpha: true});
+        _rootElement = app.renderer.domElement;
+        _container = document.getElementById('container');
+        _container.appendChild(_rootElement);
         
-        app._camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-        app._camera.position.z = 6;
-        app._camera.position.y = 2.5;
-        app._camera.position.x = 0;
+        _camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        _camera.position.z = 6;
+        _camera.position.y = 2.5;
+        _camera.position.x = 0;
         
-        app._controls = new THREE.OrbitControls(app._camera, app._rootElement);
+        _controls = new THREE.OrbitControls(_camera, _rootElement);
         
         app.scene = new THREE.Scene();
-        app.scene.add(app._camera);
+        app.scene.add(_camera);
         
         let light = new THREE.HemisphereLight(0x777777, 0x000000, 0.6);
         app.scene.add(light);
     };
 
-    app._init = () => {
+    
+    // Property initialization
+
+    app.requestFullscreen = () => {
+        if (_container.requestFullscreen) {
+            _container.requestFullscreen();
+        } else if (_container.msRequestFullscreen) {
+            _container.msRequestFullscreen();
+        } else if (_container.mozRequestFullScreen) {
+            _container.mozRequestFullScreen();
+        } else if (_container.webkitRequestFullscreen) {
+            _container.webkitRequestFullscreen();
+        }
+    };
+
+    app.init = (floorImage, skyImage, leftImage, rightImage, frontImage, backImage) => {
         _setup();
         
         window.addEventListener('resize', _resize, false);
         window.addEventListener('deviceorientation', _setOrientationControls, true);
         
-        app.buildEnvironment();
-        app.animate();
+        app.buildEnvironment(floorImage, skyImage, leftImage, rightImage, frontImage, backImage);
+        
+        _animate();
     };
-    
-    document.addEventListener("DOMContentLoaded", app._init, true);
 })(CCBCC_VR_APP);
 
