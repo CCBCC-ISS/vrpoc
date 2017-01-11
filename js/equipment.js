@@ -33,7 +33,7 @@ var CCBCC_VR_APP = CCBCC_VR_APP || {};
     app.Cooler = {
         SevenWide: () => _3DRectangle.create(1, 3, 1, '7-wide.jpg'),
         EightWide: () => _3DRectangle.create(2, 3, 1, '8-wide.jpg'),
-         NineWide: () => _3DRectangle.create(3, 3, 1, '9-wide.jpg'),
+         NineWide: () => _3DRectangle.create(3, 3, 1, '9-wide.png'),
     };
     
 })(CCBCC_VR_APP);

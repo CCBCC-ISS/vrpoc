@@ -70,7 +70,7 @@ var CCBCC_VR_APP = CCBCC_VR_APP || {};
         
         _camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
         _camera.position.z = 6;
-        _camera.position.y = 2.5;
+        _camera.position.y = 2;
         _camera.position.x = 0;
         
         _controls = new THREE.OrbitControls(_camera, _rootElement);
@@ -78,11 +78,14 @@ var CCBCC_VR_APP = CCBCC_VR_APP || {};
         app.scene = new THREE.Scene();
         app.scene.add(_camera);
         
-        let light = new THREE.HemisphereLight(0x777777, 0x000000, 0.6);
+        let light = new THREE.HemisphereLight(0x777777, 0x000000, 0.75);
         app.scene.add(light);
+
+        let ambientLight = new THREE.AmbientLight(0x404040);
+        app.scene.add(ambientLight);
     };
 
-    
+
     // Property initialization
 
     app.requestFullscreen = () => {
